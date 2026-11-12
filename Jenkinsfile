@@ -11,7 +11,9 @@ pipeline {
     }
 
     environment {
-        NS = "grafana-${params.ENV}"
+         TARGET_ENV = "${params.ENV}"
+	 NS = "grafana-${params.ENV}"
+	 NODE_IP    = "${params.NODE_IP}"
     }
 
     stages {
@@ -34,8 +36,8 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
                     sh '''
-                        kubectl kustomize overlays/$ENV > /dev/null
-                        kubectl apply -k overlays/$ENV --dry-run=server
+                        kubectl kustomize overlays/$TARGET_ENV > /dev/null
+                        kubectl apply -k overlays/$TARGET_ENV --dry-run=server
                     '''
                 }
             }
@@ -60,7 +62,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBECONFIG')]) {
-                    sh 'kubectl apply -k overlays/$ENV'
+                    sh 'kubectl apply -k overlays/$TARGET_ENV'
                 }
             }
         }
