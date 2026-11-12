@@ -3,6 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: grafana-data
 spec:
+  storageClassName: ceph-rbd
   accessModes: ["ReadWriteOnce"]
   resources:
     requests:
